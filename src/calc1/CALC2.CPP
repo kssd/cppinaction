@@ -14,15 +14,13 @@ using std::endl;
 
 const int maxBuf = 100;
 
-enum Status
-{
+enum Status {
     stOk,
     stQuit,
     stError
 };
 
-enum EToken
-{
+enum EToken {
     tEnd,
     tError,
     tNumber,
@@ -30,14 +28,14 @@ enum EToken
     tMult
 };
 
-class Scanner
-{
+class Scanner {
 public:
     Scanner (char const * buf);
-    EToken  Token () const { return _token; }
+    EToken  Token () const {
+        return _token;
+    }
     EToken  Accept ();
-    double Number ()
-    {
+    double Number () {
         assert (_token == tNumber);
         return _number;
     }
@@ -51,23 +49,19 @@ private:
 };
 
 Scanner::Scanner (char const * buf )
-: _buf (buf), _iLook (0)
-{
+    : _buf (buf), _iLook (0) {
     cout << "Scanner with \"" << buf << "\"" << endl;
     Accept ();
 }
 
-void Scanner::EatWhite ()
-{
+void Scanner::EatWhite () {
     while (isspace (_buf [_iLook]))
         _iLook++;
 }
 
-EToken Scanner::Accept ()
-{
+EToken Scanner::Accept () {
     EatWhite ();
-    switch (_buf [_iLook])
-    {
+    switch (_buf [_iLook]) {
     case '+':
         _token = tPlus;
         _iLook++;
@@ -76,8 +70,16 @@ EToken Scanner::Accept ()
         _token = tMult;
         _iLook++;
         break;
-    case '0': case '1': case '2': case '3': case '4':
-    case '5': case '6': case '7': case '8': case '9':
+    case '0':
+    case '1':
+    case '2':
+    case '3':
+    case '4':
+    case '5':
+    case '6':
+    case '7':
+    case '8':
+    case '9':
         _token = tNumber;
         _number = atoi (&_buf [_iLook]);
         while (isdigit (_buf [_iLook]))
@@ -94,14 +96,12 @@ EToken Scanner::Accept ()
 }
 
 
-class SymbolTable
-{
+class SymbolTable {
 public:
     SymbolTable () {}
 };
 
-class Parser
-{
+class Parser {
 public:
     Parser (Scanner & scanner, SymbolTable & symTab);
     ~Parser ();
@@ -115,18 +115,15 @@ private:
 };
 
 Parser::Parser (Scanner & scanner, SymbolTable & symTab)
-: _scanner (scanner), _symTab (symTab)
-{
+    : _scanner (scanner), _symTab (symTab) {
     cout << "Parser created\n";
 }
 
-Parser::~Parser ()
-{
+Parser::~Parser () {
     cout << "Destroying parser\n";
 }
 
-Status Parser::Eval ()
-{
+Status Parser::Eval () {
     cout << "Parser eval\n";
     Status status = Parse ();
     if (status == stOk)
@@ -134,19 +131,15 @@ Status Parser::Eval ()
     return status;
 }
 
-void Parser::Execute ()
-{
+void Parser::Execute () {
     cout << "Execute\n";
 }
 
-Status Parser::Parse ()
-{
+Status Parser::Parse () {
     for (EToken token = _scanner.Token ();
-        token != tEnd;
-        token = _scanner.Accept ())
-    {
-        switch (token)
-        {
+            token != tEnd;
+            token = _scanner.Accept ()) {
+        switch (token) {
         case tMult:
             cout << "Times\n";
             break;
@@ -167,17 +160,18 @@ Status Parser::Parse ()
     return stOk;
 }
 
-void main ()
-{
+void main () {
     char buf [maxBuf];
     Status status;
     SymbolTable symTab;
-    do
-    {
+    do {
         cout << "> ";  // prompt
         cin.getline (buf, maxBuf);
         Scanner scanner (buf);
         Parser  parser (scanner, symTab);
         status = parser.Eval ();
-    } while (status != stQuit);
+    }
+    while (status != stQuit);
 }
+
+

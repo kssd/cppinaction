@@ -9,15 +9,17 @@
 #include "stack.h"
 #include "input.h"
 
-class Calculator
-{
-public:
-    bool Execute (Input const & input);
-    // give access to stack
-    IStack const & GetStack () { return _stack; }
-private:
-    int Calculate (int n1, int n2, int token) const;
+class Calculator {
+    public:
+        bool Execute (Input const & input);
+        // give access to stack
+        IStack const & GetStack () {
+            return _stack;
+            }
+    private:
+        int Calculate (int n1, int n2, int token) const;
 
-    IStack  _stack;
-};
+        IStack  _stack;
+    };
 #endif
+

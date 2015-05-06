@@ -12,8 +12,7 @@ using namespace std;
 
 // get input from stdin, convert to token
 
-Input::Input ()
-{
+Input::Input () {
     cin >> _buf;
 
     // first char of input is usually enough to decide
@@ -25,21 +24,20 @@ Input::Input ()
         _token = tokNumber;
     else if (c == '+' || c == '*' || c == '/')
         _token = c;
-    else if (c == '-') // allow entering negative numbers
-    {
+    else if (c == '-') { // allow entering negative numbers
         if (isdigit (_buf[1]))
             _token = tokNumber;
         else
             _token = c;
-    }
+        }
     else
         _token = tokError;
-}
+    }
 
 // call only when token is tokNumber to retrieve numeric value
 
-int Input::Number () const
-{
+int Input::Number () const {
     assert (_token == tokNumber);
     return atoi (_buf);   // convert string to integer
-}
+    }
+

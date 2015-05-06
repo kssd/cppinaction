@@ -7,8 +7,7 @@
 
 #include "tree.h"
 
-enum Status
-{
+enum Status {
     stOk,
     stQuit,
     stError
@@ -20,13 +19,12 @@ class Store;
 class FunctionTable;
 class SymbolTable;
 
-class Parser
-{
+class Parser {
 public:
     Parser (Scanner & scanner,
-        Store & store,
-        FunctionTable & funTab,
-        SymbolTable & symTab );
+            Store & store,
+            FunctionTable & funTab,
+            SymbolTable & symTab );
     ~Parser ();
     Status Eval ();
 private:
@@ -44,3 +42,4 @@ private:
     SymbolTable &    _symTab;
 };
 #endif
+

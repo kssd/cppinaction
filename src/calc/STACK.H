@@ -7,8 +7,7 @@
 
 const int maxStack = 16;
 
-class IStack
-{
+class IStack {
     friend class StackSeq; // give it access to private members
 public:
     IStack (): _top (0) {}
@@ -22,8 +21,7 @@ private:
     int _top;
 };
 
-class StackSeq
-{
+class StackSeq {
 public:
     StackSeq (IStack const & stack);
     int AtEnd () const;
@@ -34,3 +32,4 @@ private:
     int     _iCur;   // current index into stack
 };
 #endif
+

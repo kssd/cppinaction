@@ -14,15 +14,17 @@ const int tokError  = 2;
 
 // Gets input from stdin, converts to token.
 
-class Input
-{
-public:
-    Input ();
-    int Token () const { return _token; }
-    int Number () const;
-private:
-    int  _token;
-    char _buf [maxBuf];
-};
+class Input {
+    public:
+        Input ();
+        int Token () const {
+            return _token;
+            }
+        int Number () const;
+    private:
+        int  _token;
+        char _buf [maxBuf];
+    };
 
 #endif // INPUT_H
+

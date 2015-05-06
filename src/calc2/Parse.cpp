@@ -17,26 +17,23 @@ using std::cout;
 using std::cin;
 using std::endl;
 
-Parser::Parser (Scanner & scanner, 
-        Store & store,
-        FunctionTable & funTab,
-        SymbolTable & symTab )
-: _scanner (scanner), 
-  _pTree (0), 
-  _status (stOk), 
-  _funTab (funTab),
-  _store (store),
-  _symTab (symTab)
-{
+Parser::Parser (Scanner & scanner,
+                Store & store,
+                FunctionTable & funTab,
+                SymbolTable & symTab )
+    : _scanner (scanner),
+      _pTree (0),
+      _status (stOk),
+      _funTab (funTab),
+      _store (store),
+      _symTab (symTab) {
 }
 
-Parser::~Parser ()
-{
+Parser::~Parser () {
     delete _pTree;
 }
 
-Status Parser::Eval ()
-{
+Status Parser::Eval () {
     Parse ();
     if (_status == stOk)
         Execute ();
@@ -45,46 +42,37 @@ Status Parser::Eval ()
     return _status;
 }
 
-void Parser::Execute ()
-{
-    if (_pTree)
-    {
+void Parser::Execute () {
+    if (_pTree) {
         double result = _pTree->Calc ();
         cout << "  " << result << endl;
     }
 }
 
-void Parser::Parse ()
-{
+void Parser::Parse () {
     _pTree = Expr ();
 }
 
-Node * Parser::Expr()
-{
+Node * Parser::Expr() {
     Node * pNode = Term ();
     EToken token = _scanner.Token ();
-    if (token == tPlus)
-    {
+    if (token == tPlus) {
         _scanner.Accept ();
         Node * pRight = Expr ();
         pNode = new AddNode (pNode, pRight);
     }
-    else if (token == tMinus)
-    {
+    else if (token == tMinus) {
         _scanner.Accept ();
         Node * pRight = Expr ();
         pNode = new SubNode (pNode, pRight);
     }
-    else if (token == tAssign)
-    {
+    else if (token == tAssign) {
         _scanner.Accept ();
         Node * pRight = Expr ();
-        if (pNode->IsLvalue ())
-        {
+        if (pNode->IsLvalue ()) {
             pNode = new AssignNode (pNode, pRight);
         }
-        else
-        {
+        else {
             _status = stError;
             delete pNode;
             pNode = Expr ();
@@ -93,17 +81,14 @@ Node * Parser::Expr()
     return pNode;
 }
 
-Node * Parser::Term ()
-{
+Node * Parser::Term () {
     Node * pNode = Factor ();
-    if (_scanner.Token () == tMult)
-    {
+    if (_scanner.Token () == tMult) {
         _scanner.Accept ();
         Node * pRight = Term ();
         pNode = new MultNode (pNode, pRight);
     }
-    else if (_scanner.Token() == tDivide)
-    {
+    else if (_scanner.Token() == tDivide) {
         _scanner.Accept ();
         Node * pRight = Term ();
         pNode = new DivideNode (pNode, pRight);
@@ -111,65 +96,55 @@ Node * Parser::Term ()
     return pNode;
 }
 
-Node * Parser::Factor ()
-{
+Node * Parser::Factor () {
     Node * pNode;
     EToken token = _scanner.Token ();
 
-    if (token == tLParen)
-    {
+    if (token == tLParen) {
         _scanner.Accept (); // accept '('
         pNode = Expr ();
         if (_scanner.Token () != tRParen)
             _status = stError;
         _scanner.Accept (); // accept ')'
     }
-    else if (token == tNumber)
-    {
+    else if (token == tNumber) {
         pNode = new NumNode (_scanner.Number ());
         _scanner.Accept ();
     }
-    else if (token == tIdent)
-    {
+    else if (token == tIdent) {
         char strSymbol [maxSymLen];
         int lenSym = maxSymLen;
         // copy the symbol into strSymbol
         _scanner.GetSymbolName (strSymbol, lenSym);
         int id = _symTab.Find (strSymbol, lenSym);
         _scanner.Accept ();
-        if (_scanner.Token () == tLParen) // function call
-        {
+        if (_scanner.Token () == tLParen) { // function call
             _scanner.Accept (); // accept '('
             pNode = Expr ();
             if (_scanner.Token () == tRParen)
-	            _scanner.Accept (); // accept ')'
-			else
+                _scanner.Accept (); // accept ')'
+            else
                 _status = stError;
-            if (id != idNotFound && id < _funTab.Size ())
-            {
+            if (id != idNotFound && id < _funTab.Size ()) {
                 pNode = new FunNode (
                     _funTab.GetFun (id), pNode);
             }
-            else
-            {
+            else {
                 cout << "Unknown function \"";
                 cout << strSymbol << "\"" << endl;
             }
         }
-        else
-        {
+        else {
             if (id == idNotFound)
                 id = _symTab.ForceAdd (strSymbol, lenSym);
             pNode = new VarNode (id, _store);
         }
     }
-    else if (token == tMinus) // unary minus
-    {
+    else if (token == tMinus) { // unary minus
         _scanner.Accept (); // accept minus
         pNode = new UMinusNode (Factor ());
     }
-    else
-    {
+    else {
         _scanner.Accept ();
         _status = stError;
         pNode = 0;
@@ -180,8 +155,7 @@ Node * Parser::Factor ()
 const int maxBuf = 100;
 const int maxSymbols = 40;
 
-void main ()
-{
+void main () {
     // Notice all these local objects.
     // A clear sign that there should be
     // a top level object, say, the Calculator.
@@ -193,12 +167,14 @@ void main ()
     FunctionTable funTab (symTab, funArr);
     Store store (maxSymbols, symTab);
 
-    do
-    {
+    do {
         cout << "> ";  // prompt
         cin.getline (buf, maxBuf);
         Scanner scanner (buf);
         Parser  parser (scanner, store, funTab, symTab);
         status = parser.Eval ();
-    } while (status != stQuit);
+    }
+    while (status != stQuit);
 }
+
+

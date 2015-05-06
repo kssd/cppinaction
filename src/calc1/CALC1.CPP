@@ -11,35 +11,29 @@ using std::endl;
 
 const int maxBuf = 100;
 
-enum Status
-{
+enum Status {
     stOk,
     stQuit,
     stError
 };
 
-class Scanner
-{
+class Scanner {
 public:
     Scanner (char const * buf );
 private:
     char const * const _buf;
 };
 
-Scanner::Scanner (char const * buf)
-: _buf (buf)
-{
+Scanner::Scanner (char const * buf) : _buf (buf) {
     cout << "Scanner with \"" << buf << "\"" << endl;
 }
 
-class SymbolTable
-{
+class SymbolTable {
 public:
     SymbolTable () {}
 };
 
-class Parser
-{
+class Parser {
 public:
     Parser (Scanner & scanner, SymbolTable & symTab );
     ~Parser ();
@@ -50,33 +44,31 @@ private:
 };
 
 Parser::Parser (Scanner & scanner, SymbolTable & symTab )
-: _scanner (scanner), _symTab (symTab)
-{
+    : _scanner (scanner), _symTab (symTab) {
     cout << "Parser created\n";
 }
 
-Parser::~Parser ()
-{
+Parser::~Parser () {
     cout << "Destroying parser\n";
 }
 
-Status Parser::Eval ()
-{
+Status Parser::Eval () {
     cout << "Parser eval\n";
     return stQuit;
 }
 
-void main ()
-{
+void main () {
     char buf [maxBuf];
     Status status;
     SymbolTable symTab;
-    do
-    {
+    do {
         cout << "> ";  // prompt
         cin.getline (buf, maxBuf);
         Scanner scanner (buf);
         Parser  parser (scanner, symTab);
         status = parser.Eval ();
-    } while (status != stQuit);
+    }
+    while (status != stQuit);
 }
+
+
